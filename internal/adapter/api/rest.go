@@ -52,11 +52,11 @@ func (r restApiBuilder) Build() RestApi {
 	// Wrap the mux with the middlewares
 	loggingMiddleware := middleware.LoggingMiddleware(logger)
 	metricsMiddleware := middleware.MetricsMiddleware(httpMetricsCollector, logger)
-	// securityMiddleware := middleware.SecurityMiddleware()
+	securityMiddleware := middleware.SecurityMiddleware()
 
 	handler := loggingMiddleware(r.mux)
 	handler = metricsMiddleware(handler)
-	// handler = securityMiddleware(handler)
+	handler = securityMiddleware(handler)
 
 	return restApi{handler: handler, logger: logging.New()}
 }
