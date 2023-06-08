@@ -1,0 +1,493 @@
+openapi: 3.0.1
+info:
+  contact:
+    name: Patrick Koss
+  license:
+    name: MIT
+  title: Grpc-Gateway Example
+  version: "1.0"
+tags:
+- description: User service
+  name: UserService
+- description: Product
+  name: ProductService
+paths:
+  /v1/products:
+    get:
+      operationId: ProductService_GetProducts
+      parameters:
+      - description: page size
+        in: query
+        name: page[size]
+        schema:
+          type: string
+      - description: exact page
+        in: query
+        name: page
+        schema:
+          type: string
+      - description: filter the product name by exact match
+        in: query
+        name: name[eq]
+        schema:
+          type: string
+      - description: filter the product name by like
+        in: query
+        name: name[like]
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/productListProductsResponse'
+          description: List all products
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: unexpected error
+      tags:
+      - ProductService
+    post:
+      operationId: ProductService_CreateProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/productCreateProductBody'
+        description: Product to create
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: Create a product
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainErrorMessage'
+          description: Invalid input
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainErrorMessage'
+          description: Already exists
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: unexpected error
+      tags:
+      - ProductService
+      x-codegen-request-body-name: body
+  /v1/products/{productId}:
+    delete:
+      operationId: ProductService_DeleteProduct
+      parameters:
+      - in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: Delete product
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainErrorMessage'
+          description: Product not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: unexpected error
+      tags:
+      - ProductService
+    get:
+      operationId: ProductService_GetProduct
+      parameters:
+      - in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/productGetProductResponse'
+          description: Get single product
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainErrorMessage'
+          description: Product not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: unexpected error
+      tags:
+      - ProductService
+  /v1/users:
+    get:
+      operationId: UserService_GetUsers
+      parameters:
+      - description: page size
+        in: query
+        name: page[size]
+        schema:
+          type: string
+      - description: exact page
+        in: query
+        name: page
+        schema:
+          type: string
+      - description: filter the user name by exact match
+        in: query
+        name: name[eq]
+        schema:
+          type: string
+      - description: filter the email by like match
+        in: query
+        name: email[like]
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userListUsersResponse'
+          description: List all users
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: unexpected error
+      tags:
+      - UserService
+    post:
+      operationId: UserService_CreateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userCreateUserBody'
+        description: User to create
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: Create an user
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainErrorMessage'
+          description: Invalid input
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainErrorMessage'
+          description: Already exists
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: unexpected error
+      tags:
+      - UserService
+      x-codegen-request-body-name: body
+  /v1/users/{userId}:
+    delete:
+      operationId: UserService_DeleteUser
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: Delete user
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainErrorMessage'
+          description: User not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: unexpected error
+      tags:
+      - UserService
+    get:
+      operationId: UserService_GetUser
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userGetUserResponse'
+          description: Get single user
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainErrorMessage'
+          description: User not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domainMessage'
+          description: unexpected error
+      tags:
+      - UserService
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    domainErrorMessage:
+      description: Human readable error response message
+      example:
+        error: for some reason
+        message: failed
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+      required:
+      - error
+      - message
+      title: Error response message
+      type: object
+    domainMessage:
+      description: Human readable response message
+      example:
+        message: success
+      properties:
+        message:
+          type: string
+      required:
+      - message
+      title: Response message
+      type: object
+    productCreateProductBody:
+      description: Product to create
+      example:
+        description: device to watch tv shows
+        name: television
+        price: 1000
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          format: double
+          type: number
+      required:
+      - description
+      - name
+      - price
+      title: Product to create
+      type: object
+    productGetProductResponse:
+      description: Single product
+      example:
+        product:
+          description: device to watch tv shows
+          id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+          name: television
+          price: 1000
+      properties:
+        product:
+          $ref: '#/components/schemas/productProduct'
+      required:
+      - product
+      title: Get single product
+      type: object
+    productListProductsResponse:
+      description: List all products
+      example:
+        products:
+        - description: device to watch tv shows
+          id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+          name: television
+          price: 1000
+      properties:
+        products:
+          items:
+            $ref: '#/components/schemas/productProduct'
+          type: array
+      required:
+      - products
+      title: List all products
+      type: object
+    productProduct:
+      description: Product to sell
+      example:
+        description: device to watch tv shows
+        id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+        name: television
+        price: 1000
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          format: double
+          type: number
+      required:
+      - description
+      - id
+      - name
+      - price
+      title: Product
+      type: object
+    protobufAny:
+      additionalProperties:
+        type: object
+      properties:
+        '@type':
+          type: string
+      type: object
+    rpcStatus:
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+        details:
+          items:
+            $ref: '#/components/schemas/protobufAny'
+          type: array
+      type: object
+    userCreateUserBody:
+      description: User to create
+      example:
+        email: patrick@gmail.com
+        name: Patrick
+        surname: Koss
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        email:
+          type: string
+      required:
+      - email
+      - name
+      - surname
+      title: User to create
+      type: object
+    userGetUserResponse:
+      description: Single user
+      example:
+        user:
+          email: patrick@gmail.com
+          id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+          name: Patrick
+          surname: Koss
+      properties:
+        user:
+          $ref: '#/components/schemas/userUser'
+      required:
+      - user
+      title: Get single user
+      type: object
+    userListUsersResponse:
+      description: List all products
+      example:
+        users:
+        - email: patrick@gmail.com
+          id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+          name: Patrick
+          surname: Koss
+      properties:
+        users:
+          items:
+            $ref: '#/components/schemas/userUser'
+          type: array
+      title: List all products
+      type: object
+    userUser:
+      description: User in the system
+      example:
+        email: patrick@gmail.com
+        id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+        name: Patrick
+        surname: Koss
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        email:
+          type: string
+      required:
+      - id
+      - name
+      title: User
+      type: object
+
+servers:
+  - url: 'https://api.prd.example.com'
+    description: prod
+  - url: 'https://api.stg.example.com'
+    description: stg
+  - url: 'https://api.dev.example.com'
+    description: dev
+security:
+  - bearerAuth: []
+

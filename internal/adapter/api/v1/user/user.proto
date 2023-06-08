@@ -1,0 +1,219 @@
+syntax = "proto3";
+package grpc.gateway.example.internal.adapter.api.v1.user;
+option go_package = "github.com/patrickkoss/grpc-gateway-example/internal/adapter/api/v1/user";
+
+import "include/googleapis/google/api/annotations.proto";
+import "include/grpc-gateway/protoc-gen-openapiv2/options/annotations.proto";
+import "internal/adapter/api/domain/proto/message.proto";
+
+message UserId{
+  string id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "userId"}}];
+}
+
+message UserParams {
+  optional string page__size___ = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "page[size]"}, description: "page size"}];
+  optional string page = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "page"}, description: "exact page"}];
+  optional string name__eq___ = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "name[eq]"}, description: "filter the user name by exact match"}];
+  optional string email__like___ = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "name[like]"}, description: "filter the email by like match"}];
+}
+
+message User {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "User"
+      description: "User in the system"
+      required: ["name", "id", "description", "price"]
+    }
+    example: "{\"name\": \"Patrick\", \"surname\": \"Koss\", \"email\": \"patrick@gmail.com\", \"id\": \"cc7bf575-3d74-4337-a41d-bfb5fb5f3284\"}"
+  };
+
+  string id = 1;
+  string name = 2;
+  string surname = 3;
+  string email = 4;
+}
+
+message CreateUserBody {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "User to create"
+      description: "User to create"
+      required: ["name", "email", "surname"]
+    }
+    example: "{\"name\": \"Patrick\", \"surname\": \"Koss\", \"email\": \"patrick@gmail.com\"}"
+  };
+
+  string name = 1;
+  string surname = 2;
+  string email = 3;
+}
+
+message ListUsersResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "List all products"
+      description: "List all products"
+      required: ["products"]
+    }
+    example: "{\"users\": [{\"name\": \"Patrick\", \"surname\": \"Koss\", \"email\": \"patrick@gmail.com\", \"id\": \"cc7bf575-3d74-4337-a41d-bfb5fb5f3284\"}]}"
+  };
+
+  repeated User users = 1;
+}
+
+message GetUserResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Get single user"
+      description: "Single user"
+      required: ["user"]
+    }
+    example: "{\"user\": {\"name\": \"Patrick\", \"surname\": \"Koss\", \"email\": \"patrick@gmail.com\", \"id\": \"cc7bf575-3d74-4337-a41d-bfb5fb5f3284\"}}"
+  };
+
+  User user = 1;
+}
+
+service UserService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    description: "User service"
+    name: "User"
+  };
+  rpc CreateUser(CreateUserBody) returns (domain.Message) {
+    option (google.api.http) = {
+      post: "/v1/users"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      responses: {
+        key: "201",
+        value: {
+          description: "Create an user";
+          schema: {
+            json_schema: {ref: "#/definitions/domainMessage"}
+          }
+        }
+      }
+      responses: {
+        key: "400",
+        value: {
+          description: "Invalid input";
+          schema: {
+            json_schema: {ref: "#/definitions/domainErrorMessage"}
+          }
+        },
+      },
+      responses: {
+        key: "409",
+        value: {
+          description: "Already exists";
+          schema: {
+            json_schema: {ref: "#/definitions/domainErrorMessage"}
+          }
+        },
+      },
+      responses: {
+        key: "default",
+        value: {
+          description: "unexpected error";
+          schema: {
+            json_schema: {ref: "#/definitions/domainMessage"}
+          }
+        },
+      },
+    };
+  }
+  rpc GetUsers(UserParams) returns (ListUsersResponse) {
+    option (google.api.http) = {
+      get: "/v1/users"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      responses: {
+        key: "200",
+        value: {
+          description: "List all users";
+          schema: {
+            json_schema: {ref: "#/definitions/userListUsersResponse"}
+          }
+        }
+      }
+      responses: {
+        key: "default",
+        value: {
+          description: "unexpected error";
+          schema: {
+            json_schema: {ref: "#/definitions/domainMessage"}
+          }
+        },
+      },
+    };
+  }
+  rpc GetUser(UserId) returns (GetUserResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      responses: {
+        key: "200",
+        value: {
+          description: "Get single user";
+          schema: {
+            json_schema: {ref: "#/definitions/userGetUserResponse"}
+          }
+        }
+      }
+      responses: {
+        key: "404",
+        value: {
+          description: "User not found";
+          schema: {
+            json_schema: {ref: "#/definitions/domainErrorMessage"}
+          }
+        },
+      },
+      responses: {
+        key: "default",
+        value: {
+          description: "unexpected error";
+          schema: {
+            json_schema: {ref: "#/definitions/domainMessage"}
+          }
+        },
+      },
+    };
+  }
+  rpc DeleteUser(UserId) returns (domain.Message) {
+    option (google.api.http) = {
+      delete: "/v1/users/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      responses: {
+        key: "200",
+        value: {
+          description: "Delete user";
+          schema: {
+            json_schema: {ref: "#/definitions/domainMessage"}
+          }
+        }
+      }
+      responses: {
+        key: "404",
+        value: {
+          description: "User not found";
+          schema: {
+            json_schema: {ref: "#/definitions/domainErrorMessage"}
+          }
+        },
+      },
+      responses: {
+        key: "default",
+        value: {
+          description: "unexpected error";
+          schema: {
+            json_schema: {ref: "#/definitions/domainMessage"}
+          }
+        },
+      },
+    };
+  }
+}

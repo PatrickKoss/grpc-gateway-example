@@ -1,0 +1,18 @@
+syntax = "proto3";
+package grpc.gateway.example.internal.adapter.api.domain;
+option go_package = "github.com/patrickkoss/grpc-gateway-example/internal/adapter/api/domain/proto";
+
+import "include/grpc-gateway/protoc-gen-openapiv2/options/annotations.proto";
+
+message Message {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Response message"
+      description: "Human readable response message"
+      required: ["message"]
+    }
+    example: "{\"message\": \"success\"}"
+  };
+
+  string message = 1;
+}

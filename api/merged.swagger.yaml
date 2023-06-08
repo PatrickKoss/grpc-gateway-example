@@ -1,0 +1,438 @@
+swagger: "2.0"
+info:
+  title: Grpc-Gateway Example
+  version: "1.0"
+  contact:
+    name: Patrick Koss
+    url: https://github.com/PatrickKoss
+  license:
+    name: MIT
+    url: https://github.com/PatrickKoss/grpc-gateway-example/blob/master/LICENSE
+tags:
+  - name: ErrorService
+  - name: UserService
+    description: User service
+  - name: ProductService
+    description: Product
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /v1/products:
+    get:
+      operationId: ProductService_GetProducts
+      responses:
+        "200":
+          description: List all products
+          schema:
+            $ref: '#/definitions/productListProductsResponse'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/domainMessage'
+      parameters:
+        - name: page__size___
+          description: page size
+          in: query
+          required: false
+          type: string
+        - name: page
+          description: exact page
+          in: query
+          required: false
+          type: string
+        - name: name__eq___
+          description: filter the product name by exact match
+          in: query
+          required: false
+          type: string
+        - name: name__like___
+          description: filter the product name by like
+          in: query
+          required: false
+          type: string
+      tags:
+        - ProductService
+    post:
+      operationId: ProductService_CreateProduct
+      responses:
+        "201":
+          description: Create a product
+          schema:
+            $ref: '#/definitions/domainMessage'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/domainErrorMessage'
+        "409":
+          description: Already exists
+          schema:
+            $ref: '#/definitions/domainErrorMessage'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/domainMessage'
+      parameters:
+        - name: body
+          description: Product to create
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/productCreateProductBody'
+      tags:
+        - ProductService
+  /v1/products/{productId}:
+    get:
+      operationId: ProductService_GetProduct
+      responses:
+        "200":
+          description: Get single product
+          schema:
+            $ref: '#/definitions/productGetProductResponse'
+        "404":
+          description: Product not found
+          schema:
+            $ref: '#/definitions/domainErrorMessage'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/domainMessage'
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          type: string
+      tags:
+        - ProductService
+    delete:
+      operationId: ProductService_DeleteProduct
+      responses:
+        "200":
+          description: Delete product
+          schema:
+            $ref: '#/definitions/domainMessage'
+        "404":
+          description: Product not found
+          schema:
+            $ref: '#/definitions/domainErrorMessage'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/domainMessage'
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          type: string
+      tags:
+        - ProductService
+  /v1/users:
+    get:
+      operationId: UserService_GetUsers
+      responses:
+        "200":
+          description: List all users
+          schema:
+            $ref: '#/definitions/userListUsersResponse'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/domainMessage'
+      parameters:
+        - name: page__size___
+          description: page size
+          in: query
+          required: false
+          type: string
+        - name: page
+          description: exact page
+          in: query
+          required: false
+          type: string
+        - name: name__eq___
+          description: filter the user name by exact match
+          in: query
+          required: false
+          type: string
+        - name: email__like___
+          description: filter the email by like match
+          in: query
+          required: false
+          type: string
+      tags:
+        - UserService
+    post:
+      operationId: UserService_CreateUser
+      responses:
+        "201":
+          description: Create an user
+          schema:
+            $ref: '#/definitions/domainMessage'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/domainErrorMessage'
+        "409":
+          description: Already exists
+          schema:
+            $ref: '#/definitions/domainErrorMessage'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/domainMessage'
+      parameters:
+        - name: body
+          description: User to create
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/userCreateUserBody'
+      tags:
+        - UserService
+  /v1/users/{userId}:
+    get:
+      operationId: UserService_GetUser
+      responses:
+        "200":
+          description: Get single user
+          schema:
+            $ref: '#/definitions/userGetUserResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/domainErrorMessage'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/domainMessage'
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+      tags:
+        - UserService
+    delete:
+      operationId: UserService_DeleteUser
+      responses:
+        "200":
+          description: Delete user
+          schema:
+            $ref: '#/definitions/domainMessage'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/domainErrorMessage'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/domainMessage'
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+      tags:
+        - UserService
+definitions:
+  domainErrorMessage:
+    type: object
+    example:
+      error: for some reason
+      message: failed
+    properties:
+      message:
+        type: string
+      error:
+        type: string
+    description: Human readable error response message
+    title: Error response message
+    required:
+      - message
+      - error
+  domainMessage:
+    type: object
+    example:
+      message: success
+    properties:
+      message:
+        type: string
+    description: Human readable response message
+    title: Response message
+    required:
+      - message
+  productCreateProductBody:
+    type: object
+    example:
+      description: device to watch tv shows
+      name: television
+      price: 1000
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      price:
+        type: number
+        format: double
+    description: Product to create
+    title: Product to create
+    required:
+      - name
+      - description
+      - price
+  productGetProductResponse:
+    type: object
+    example:
+      product:
+        description: device to watch tv shows
+        id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+        name: television
+        price: 1000
+    properties:
+      product:
+        $ref: '#/definitions/productProduct'
+    description: Single product
+    title: Get single product
+    required:
+      - product
+  productListProductsResponse:
+    type: object
+    example:
+      products:
+        - description: device to watch tv shows
+          id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+          name: television
+          price: 1000
+    properties:
+      products:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/productProduct'
+    description: List all products
+    title: List all products
+    required:
+      - products
+  productProduct:
+    type: object
+    example:
+      description: device to watch tv shows
+      id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+      name: television
+      price: 1000
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      price:
+        type: number
+        format: double
+    description: Product to sell
+    title: Product
+    required:
+      - name
+      - id
+      - description
+      - price
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'
+  userCreateUserBody:
+    type: object
+    example:
+      email: patrick@gmail.com
+      name: Patrick
+      surname: Koss
+    properties:
+      name:
+        type: string
+      surname:
+        type: string
+      email:
+        type: string
+    description: User to create
+    title: User to create
+    required:
+      - name
+      - email
+      - surname
+  userGetUserResponse:
+    type: object
+    example:
+      user:
+        email: patrick@gmail.com
+        id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+        name: Patrick
+        surname: Koss
+    properties:
+      user:
+        $ref: '#/definitions/userUser'
+    description: Single user
+    title: Get single user
+    required:
+      - user
+  userListUsersResponse:
+    type: object
+    example:
+      users:
+        - email: patrick@gmail.com
+          id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+          name: Patrick
+          surname: Koss
+    properties:
+      users:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/userUser'
+    description: List all products
+    title: List all products
+    required:
+      - products
+  userUser:
+    type: object
+    example:
+      email: patrick@gmail.com
+      id: cc7bf575-3d74-4337-a41d-bfb5fb5f3284
+      name: Patrick
+      surname: Koss
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      surname:
+        type: string
+      email:
+        type: string
+    description: User in the system
+    title: User
+    required:
+      - name
+      - id
+      - description
+      - price

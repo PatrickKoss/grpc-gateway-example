@@ -1,0 +1,6 @@
+.idea
+tools/
+bin/
+build/
+coverage.txt
+tmp/

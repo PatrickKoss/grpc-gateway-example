@@ -1,0 +1,24 @@
+syntax = "proto3";
+package grpc.gateway.example.internal.adapter.api.domain;
+option go_package = "github.com/patrickkoss/grpc-gateway-example/internal/adapter/api/domain/proto";
+
+import "include/grpc-gateway/protoc-gen-openapiv2/options/annotations.proto";
+
+message ErrorMessage {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Error response message"
+      description: "Human readable error response message"
+      required: ["message", "error"]
+    }
+    example: "{\"message\": \"failed\", \"error\": \"for some reason\"}"
+  };
+
+  string message = 1;
+  string error = 2;
+}
+
+// service purly for swagger generation
+service ErrorService {
+  rpc CreateProduct(ErrorMessage) returns (ErrorMessage) {}
+}
