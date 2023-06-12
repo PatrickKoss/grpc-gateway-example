@@ -22,6 +22,7 @@ bearerAuth="components:\n  securitySchemes:\n    bearerAuth:\n      type: http\n
 sed -i "" "s|___|]|g" ./api/openapi.yaml
 sed -i "" "s|__|[|g" ./api/openapi.yaml
 sed -i "" "s|components:|$bearerAuth|g" ./api/openapi.yaml
+sed -i "" -E 's/(name|page)\.(eq|like|size)/\1[\2]/g' ./api/openapi.yaml
 
 echo "
 servers:

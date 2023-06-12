@@ -4,12 +4,16 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"github.com/patrickkoss/grpc-gateway-example/internal/adapter/api/middleware"
 	"github.com/patrickkoss/grpc-gateway-example/internal/adapter/logging"
 	"github.com/patrickkoss/grpc-gateway-example/internal/adapter/metrics_collector"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/proto"
 )
 
 type RestApiBuilder interface {
@@ -73,5 +77,27 @@ func (r restApi) Start(port string, metricsPort string) error {
 }
 
 func NewRestApiBuilder() RestApiBuilder {
-	return restApiBuilder{mux: runtime.NewServeMux(runtime.WithErrorHandler(middleware.CustomHTTPError), runtime.WithForwardResponseOption(middleware.HttpResponseModifier))}
+	return restApiBuilder{mux: runtime.NewServeMux(runtime.WithErrorHandler(middleware.CustomHTTPError), runtime.WithForwardResponseOption(middleware.HttpResponseModifier), runtime.SetQueryParameterParser(&CustomQueryParser{}))}
+}
+
+type CustomQueryParser struct {
+	runtime.DefaultQueryParser
+}
+
+func (c *CustomQueryParser) Parse(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error {
+	for key, values := range values {
+		fieldPath := strings.Split(key, ".")
+		if filter.HasCommonPrefix(fieldPath) {
+			continue
+		}
+		// replace [ in key with . and remove ]
+		key = strings.ReplaceAll(key, "[", ".")
+		key = strings.ReplaceAll(key, "]", "")
+
+		if err := runtime.PopulateFieldFromPath(msg, key, values[0]); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

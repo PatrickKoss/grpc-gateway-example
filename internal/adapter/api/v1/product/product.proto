@@ -10,11 +10,19 @@ message ProductId{
   string id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "productId"}}];
 }
 
+message Aggregation {
+  optional string eq = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "eq"}, description: "exact match"}];
+  optional string like = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "like"}}];
+}
+
+message Page {
+  optional string size = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "size"}}];
+  optional string eq = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "eq"}}];
+}
+
 message ProductParams {
-  optional string page__size___ = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "page[size]"}, description: "page size"}];
-  optional string page = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "page"}, description: "exact page"}];
-  optional string name__eq___ = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "name[eq]"}, description: "filter the product name by exact match"}];
-  optional string name__like___ = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "name[like]"}, description: "filter the product name by like"}];
+  optional Page page = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "page"}, description: "page size", title: "page[size]"}, json_name="page"];
+  optional Aggregation name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "name"}, description: "filter the product name by exact match"}, json_name="name"];
 }
 
 message Product {
