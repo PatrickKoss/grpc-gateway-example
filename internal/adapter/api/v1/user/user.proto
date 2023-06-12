@@ -11,10 +11,10 @@ message UserId{
 }
 
 message UserParams {
-  optional string page__size___ = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "page[size]"}, description: "page size"}];
+  optional string page__size___ = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "page[size]"}, description: "page size"}, json_name="page[size]"];
   optional string page = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "page"}, description: "exact page"}];
-  optional string name__eq___ = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "name[eq]"}, description: "filter the user name by exact match"}];
-  optional string email__like___ = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "name[like]"}, description: "filter the email by like match"}];
+  optional string name__eq___ = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "name[eq]"}, description: "filter the user name by exact match"}, json_name="name[eq]"];
+  optional string email__like___ = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "name[like]"}, description: "filter the email by like match"}, json_name="name[like]"];
 }
 
 message User {
