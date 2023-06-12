@@ -140,20 +140,20 @@ paths:
           schema:
             $ref: '#/definitions/domainMessage'
       parameters:
-        - name: page__size___.size
+        - name: page.size
           in: query
           required: false
           type: string
-        - name: page
-          description: exact page
+        - name: page.eq
           in: query
           required: false
           type: string
-        - name: name__eq___.eq
+        - name: name.eq
+          description: exact match
           in: query
           required: false
           type: string
-        - name: email__like___.like
+        - name: name.like
           in: query
           required: false
           type: string
@@ -259,14 +259,6 @@ definitions:
     title: Response message
     required:
       - message
-  productAggregation:
-    type: object
-    properties:
-      eq:
-        type: string
-        description: exact match
-      like:
-        type: string
   productCreateProductBody:
     type: object
     example:
@@ -320,13 +312,6 @@ definitions:
     title: List all products
     required:
       - products
-  productPage:
-    type: object
-    properties:
-      size:
-        type: string
-      eq:
-        type: string
   productProduct:
     type: object
     example:
@@ -389,11 +374,6 @@ definitions:
       - name
       - email
       - surname
-  userEq:
-    type: object
-    properties:
-      eq:
-        type: string
   userGetUserResponse:
     type: object
     example:
@@ -409,11 +389,6 @@ definitions:
     title: Get single user
     required:
       - user
-  userLike:
-    type: object
-    properties:
-      like:
-        type: string
   userListUsersResponse:
     type: object
     example:
@@ -432,11 +407,6 @@ definitions:
     title: List all products
     required:
       - products
-  userSize:
-    type: object
-    properties:
-      size:
-        type: string
   userUser:
     type: object
     example:
@@ -460,3 +430,33 @@ definitions:
       - id
       - description
       - price
+  v1productAggregation:
+    type: object
+    properties:
+      eq:
+        type: string
+        description: exact match
+      like:
+        type: string
+  v1productPage:
+    type: object
+    properties:
+      size:
+        type: string
+      eq:
+        type: string
+  v1userAggregation:
+    type: object
+    properties:
+      eq:
+        type: string
+        description: exact match
+      like:
+        type: string
+  v1userPage:
+    type: object
+    properties:
+      size:
+        type: string
+      eq:
+        type: string

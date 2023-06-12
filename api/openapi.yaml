@@ -149,20 +149,20 @@ paths:
       operationId: UserService_GetUsers
       parameters:
       - in: query
-        name: page[size].size
+        name: page[size]
         schema:
           type: string
-      - description: exact page
+      - in: query
+        name: page[eq]
+        schema:
+          type: string
+      - description: exact match
         in: query
-        name: page
+        name: name[eq]
         schema:
           type: string
       - in: query
-        name: name[eq].eq
-        schema:
-          type: string
-      - in: query
-        name: email[like].like
+        name: name[like]
         schema:
           type: string
       responses:
@@ -309,14 +309,6 @@ components:
       - message
       title: Response message
       type: object
-    productAggregation:
-      properties:
-        eq:
-          description: exact match
-          type: string
-        like:
-          type: string
-      type: object
     productCreateProductBody:
       description: Product to create
       example:
@@ -368,13 +360,6 @@ components:
       required:
       - products
       title: List all products
-      type: object
-    productPage:
-      properties:
-        size:
-          type: string
-        eq:
-          type: string
       type: object
     productProduct:
       description: Product to sell
@@ -438,11 +423,6 @@ components:
       - surname
       title: User to create
       type: object
-    userEq:
-      properties:
-        eq:
-          type: string
-      type: object
     userGetUserResponse:
       description: Single user
       example:
@@ -458,11 +438,6 @@ components:
       - user
       title: Get single user
       type: object
-    userLike:
-      properties:
-        like:
-          type: string
-      type: object
     userListUsersResponse:
       description: List all products
       example:
@@ -477,11 +452,6 @@ components:
             $ref: '#/components/schemas/userUser'
           type: array
       title: List all products
-      type: object
-    userSize:
-      properties:
-        size:
-          type: string
       type: object
     userUser:
       description: User in the system
@@ -503,6 +473,36 @@ components:
       - id
       - name
       title: User
+      type: object
+    v1productAggregation:
+      properties:
+        eq:
+          description: exact match
+          type: string
+        like:
+          type: string
+      type: object
+    v1productPage:
+      properties:
+        size:
+          type: string
+        eq:
+          type: string
+      type: object
+    v1userAggregation:
+      properties:
+        eq:
+          description: exact match
+          type: string
+        like:
+          type: string
+      type: object
+    v1userPage:
+      properties:
+        size:
+          type: string
+        eq:
+          type: string
       type: object
 
 servers:
